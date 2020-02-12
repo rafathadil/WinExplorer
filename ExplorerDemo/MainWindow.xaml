@@ -1,0 +1,43 @@
+﻿<Window x:Class="ExplorerDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ExplorerDemo"
+        xmlns:View="clr-namespace:ExplorerDemo.View"
+        xmlns:ViewModel="clr-namespace:ExplorerDemo.ViewModel"
+        xmlns:i="http://schemas.microsoft.com/expression//2010/interactivity"
+        xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+        mc:Ignorable="d"
+        Title="Explorer" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="White">
+            <ContentControl Content="{Binding CurrentPage}">
+                <ContentControl.Resources>
+                    <DataTemplate DataType="{x:Type ViewModel:DrivesVM}">
+                        <View:Drives  />
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type ViewModel:ChoosenDrive}">
+                        <View:ChoosenDrive />
+                    </DataTemplate>
+                </ContentControl.Resources>
+            </ContentControl>
+        </Grid>
+        <Grid Grid.Row="1" Background="Gray">
+            <DockPanel Margin="5">
+                <Button Width="100" Content="Next" Command="{Binding CurrentPage.ShowNextPage}" 
+                        DockPanel.Dock="Right"  Style="{StaticResource style_Button_Navigation}"/>
+
+                <Button Width="100" Content="Back" DockPanel.Dock="Left" 
+                        Command="{Binding CurrentPage.ShowPreviousPage}" Style="{StaticResource style_Button_Navigation}"/>
+
+                <Button Width="100" Content="Home" Command="{Binding CurrentPage.ShowHomePage}"
+                        Style="{StaticResource style_Button_Navigation}"/>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Window>

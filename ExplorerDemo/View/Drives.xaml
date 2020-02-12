@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="ExplorerDemo.View.Drives"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ExplorerDemo.View"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBlock FontSize="30">Connected drives to this pc are lsited below </TextBlock>
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Path=ListofConnectedDrives}">
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="FrameworkElement.Margin" Value="0"/>
+                    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Stretch"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel   Orientation="Horizontal" 
+                                 HorizontalAlignment="Stretch"
+                                 MinHeight="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}, Path=ActualHeight}"
+                                />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <ToggleButton Command="{Binding Click}"  Tag="{Binding DriveLetter}" IsChecked="{Binding IsSelected,Mode=TwoWay}" Style="{StaticResource style_ToggleButton_UserControl}">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="10"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock FontSize="30" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding DriveLetter}"></TextBlock>
+
+                        </Grid>
+
+                    </ToggleButton>
+                    <!--<i:>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <ei:ChangePropertyAction TargetObject="{Binding Mode=OneWay}" PropertyName="SelectedItems" Value="{Binding Path=SelectedItems,     ElementName=ObjectListView}"/>
+                        </i:EventTrigger>
+                    </i:>-->
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>
