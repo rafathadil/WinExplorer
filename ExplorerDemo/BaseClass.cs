@@ -19,10 +19,5 @@ namespace ExplorerDemo
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-
     }
-
-   
-
 }

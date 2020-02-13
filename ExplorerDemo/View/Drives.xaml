@@ -13,7 +13,7 @@
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <TextBlock FontSize="30">Connected drives to this pc are lsited below </TextBlock>
+        <TextBlock HorizontalAlignment="Center" FontSize="30">Connected Drives</TextBlock>
         <ItemsControl Grid.Row="1" ItemsSource="{Binding Path=ListofConnectedDrives}">
             <ItemsControl.ItemContainerStyle>
                 <Style>
@@ -34,13 +34,27 @@
                     <ToggleButton Command="{Binding Click}"  Tag="{Binding DriveLetter}" IsChecked="{Binding IsSelected,Mode=TwoWay}" Style="{StaticResource style_ToggleButton_UserControl}">
 
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition Width="10"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
 
-                            <TextBlock FontSize="30" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding DriveLetter}"></TextBlock>
+                            <TextBlock Foreground="Black" FontSize="25" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"
+                                       Text="{Binding DriveLetter}"></TextBlock>
+                            <StackPanel Grid.Row="1">
+                                <TextBlock FontSize="12" Grid.Column="1" HorizontalAlignment="Left" 
+                                           VerticalAlignment="Center" TextWrapping="Wrap"
+                                       Text="{Binding AvailableFreeSpace}"></TextBlock>
+
+                                <TextBlock FontSize="12" Grid.Column="1" HorizontalAlignment="Left" 
+                                           VerticalAlignment="Center" TextWrapping="Wrap"
+                                       Text="{Binding TotalSize}"></TextBlock>
+
+                                <TextBlock FontSize="12" Grid.Column="1" HorizontalAlignment="Left" 
+                                           VerticalAlignment="Center" TextWrapping="Wrap"
+                                       Text="{Binding VloType}"></TextBlock>
+                            </StackPanel>
+                            
 
                         </Grid>
 

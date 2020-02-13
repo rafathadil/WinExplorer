@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -13,47 +14,7 @@ namespace ExplorerDemo.ViewModel
     public class ChoosenDrive : BaseClass, INavigation
     {
 
-
-        #region Private Properties
- 
-        private object previousPage;
-        private object nextPage;
-
-        #endregion
-
-        #region Private Properties
-
-        public object PreviousPage
-        {
-            get
-            {
-                return previousPage;
-            }
-            set
-            {
-                previousPage = value;
-                OnPropertyChanged("PreviousPage");
-            }
-        }
-        public object NextPage
-        {
-            get
-            {
-                return nextPage;
-            }
-            set
-            {
-                nextPage = value;
-                OnPropertyChanged("NextPage");
-            }
-        }
-
-        
-
-        #endregion
-
-
-        //The command property
+        #region properties  
         private DelegateCommand showNextPage;
         public DelegateCommand ShowNextPage
         {
@@ -75,59 +36,6 @@ namespace ExplorerDemo.ViewModel
             set { showHomePage = value; }
         }
 
-        private DelegateCommand navigatebegin;
-        public DelegateCommand Navigatebegin
-        {
-            get { return navigatebegin; }
-            set { navigatebegin = value; }
-        }
-
-        private bool _CanExcuteShowNextPage(object obj)
-        {
-            return true;
-        }
-        //The execute and can execute methods.
-        private bool CanExcuteShowNextPage(object obj)
-        {
-            return false;
-        }
-        private void ExecuteShowNextPage(object obj)
-        {
-            //  NextPage = new LanguageVM();
-            GlobalVariable.objMainWindowVM.CurrentPage = new DrivesVM();
-        }
-
-        private bool CanExcuteShowPreviousPage(object obj)
-        {
-            return false;
-        }
-        private bool CanExcuteShowHomePage(object obj)
-        {
-            return true;
-        }
-
-
-        private bool CanExcuteDrives(object obj)
-        {
-            return true;
-        }
-
-        ObservableCollection<ObservableCollection<RootTreeViewItem>> _MainNodeViewItem { get; set; }
-
-        public ObservableCollection<ObservableCollection<RootTreeViewItem>> MainNodeViewItem
-        {
-            get { return _MainNodeViewItem; }
-            set
-            {
-                if (_MainNodeViewItem == null)
-                {
-                    _MainNodeViewItem = new ObservableCollection<ObservableCollection<RootTreeViewItem>>();
-                }
-                _MainNodeViewItem = value;
-                OnPropertyChanged("MainNodeViewItem");
-            }
-        }
-
         ObservableCollection<RootTreeViewItem> _RootTreeViewItem { get; set; }
 
         public ObservableCollection<RootTreeViewItem> LsRootTreeViewItem
@@ -146,68 +54,180 @@ namespace ExplorerDemo.ViewModel
 
 
 
-
+        public string _ValidationError { get; set; }
+        public string ValidationError
+        {
+            get
+            {
+                return _ValidationError;
+            }
+            set
+            {
+                _ValidationError = value;
+                OnPropertyChanged("ValidationError");
+            }
+        }
         private DelegateCommand _ClickCopy;
         public DelegateCommand ClickCopy
         {
             get { return _ClickCopy; }
-            set { _ClickCopy = value; }
+            set { _ClickCopy = value; OnPropertyChanged("ClickCopy"); }
         }
 
         private DelegateCommand _ClickCut;
         public DelegateCommand ClickCut
         {
             get { return _ClickCut; }
-            set { _ClickCut = value; }
+            set { _ClickCut = value; OnPropertyChanged("ClickCut"); }
         }
 
         private DelegateCommand _ClickPaste;
         public DelegateCommand ClickPaste
         {
             get { return _ClickPaste; }
-            set { _ClickPaste = value; }
+            set
+            {
+                _ClickPaste = value;
+                OnPropertyChanged("ClickPaste");
+            }
         }
 
-        //private bool _IsExpanded;
-        //public bool IsExpanded
-        //{
-        //    get { return _IsExpanded; }
-        //    set
-        //    {
-        //        if (_IsExpanded == value) return;
-        //        _IsExpanded = value;
-        //        OnPropertyChanged("IsExpanded");//or however you need to do it
-        //        //CallSomeOtherFunc();//this is the code that you need to be called when changed.
-        //    }
-        //}
+        #endregion
 
-       
-
-        private bool SetCopyingPath(object obj)
+        #region Methods
+        private bool IsAllowedToCopy(object obj)
         {
-            System.Windows.DependencyObject Obj = new System.Windows.DependencyObject();
-            
-            var test = TreeViewHelper.GetSelectedItem(Obj);
+            if (ExplorerDemo.GlobalVariable.FileTransferModel == null || ExplorerDemo.GlobalVariable.FileTransferModel.CurrentAction == Model.FileTransferModel.EAction.none)
+                return true;
+            else if (ExplorerDemo.GlobalVariable.TreviewSelectedItem != null)
+            {
+                //ClickCut = new DelegateCommand(SetCutingPath, IsAllowedToCut);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private bool IsAllowedToCut(object obj)
+        {
+            if (ExplorerDemo.GlobalVariable.FileTransferModel == null || ExplorerDemo.GlobalVariable.FileTransferModel.CurrentAction == Model.FileTransferModel.EAction.none)
+                return true;
+            else if (ExplorerDemo.GlobalVariable.TreviewSelectedItem != null) //&& ExplorerDemo.GlobalVariable.FileTransferModel.CurrentAction == Model.FileTransferModel.EAction.cut)
+            {
+              //  ClickCopy = new DelegateCommand(SetCopyingPath, IsAllowedToCopy);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private bool IsAllowedToPaste(object obj)
+        {
+
+            if (ExplorerDemo.GlobalVariable.FileTransferModel == null)
+                return false;
+            else if (ExplorerDemo.GlobalVariable.TreviewSelectedItem != null)
+            {
+                ExplorerDemo.GlobalVariable.FileTransferModel.DestinationAdress = ExplorerDemo.GlobalVariable.TreviewSelectedItem;
+                return true;
+            }
+            else
+                return false;
+        }
+
+        private void SetCopyingPath(object obj)
+        {
+            ValidationError = string.Empty;
+            if (ExplorerDemo.GlobalVariable.TreviewSelectedItem != null)
+            {
+                ExplorerDemo.GlobalVariable.FileTransferModel = new Model.FileTransferModel();
+                ExplorerDemo.GlobalVariable.FileTransferModel.SourceFile = ExplorerDemo.GlobalVariable.TreviewSelectedItem;
+                ExplorerDemo.GlobalVariable.FileTransferModel.CurrentAction = Model.FileTransferModel.EAction.none;
+                ClickPaste = new DelegateCommand(Paste, IsAllowedToPaste);
+
+                ValidationError = "File acquired to copy";
+            }
+        }
+        private void SetCutingPath(object obj)
+        {
+            ValidationError = string.Empty;
+            if (ExplorerDemo.GlobalVariable.TreviewSelectedItem != null)
+            {
+                ExplorerDemo.GlobalVariable.FileTransferModel = new Model.FileTransferModel();
+                ExplorerDemo.GlobalVariable.FileTransferModel.SourceFile = ExplorerDemo.GlobalVariable.TreviewSelectedItem;
+                ExplorerDemo.GlobalVariable.FileTransferModel.CurrentAction = Model.FileTransferModel.EAction.cut;
+                ClickPaste = new DelegateCommand(Paste, IsAllowedToPaste);
+                ValidationError = "File acquired to cut";
+            }
+        }
+        private void Paste(object obj)
+        {
+            if (ExplorerDemo.GlobalVariable.FileTransferModel != null)
+            {
+                if (ExplorerDemo.ViewModel.ValidationVM.ValidatedPaste())
+                {
+                    ValidationError = string.Empty;
+                    GlobalVariable.objMainWindowVM.CurrentPage = new ProcessVM();
+                    Thread ProcessFiles = new Thread(delegate ()
+                    {
+
+                        if (!DataTransferVM.Pastefiles(ExplorerDemo.GlobalVariable.FileTransferModel))
+                        {
+                            ValidationError = DataTransferVM.LastErrorMsg;
+                        }
+                        else
+                        {
+                            ValidationError = "File Moved";
+                            ExplorerDemo.GlobalVariable.FileTransferModel = null;
+                        }
+
+
+                        GlobalVariable.objMainWindowVM.CurrentPage = this;
+
+
+                    });
+                    ProcessFiles.Start();
+
+                }
+                else
+                {
+                    ExplorerDemo.GlobalVariable.FileTransferModel = null;
+                    ValidationError = ExplorerDemo.ViewModel.ValidationVM.Validationerror;
+                }
+            }
+
+        }
+
+        private void ExecuteShowHomeNPage(object obj)
+        {
+            GlobalVariable.objMainWindowVM.CurrentPage = new DrivesVM();
+        }
+
+        private bool _CanExcute(object obj)
+        {
+            return false;
+        }
+        private bool CanExcuteShowHomePage(object obj)
+        {
             return true;
         }
 
-        private void _SetCopyingPath(object obj)
+        public void BuildParentNode()
         {
-            var test = TreeViewHelper.SelectedItemProperty;
-          //  return null;
-        }
-        public ChoosenDrive()
-        {
-
-
-            ShowHomePage = new DelegateCommand(ExecuteShowNextPage, CanExcuteShowHomePage);
-            ClickCopy = new DelegateCommand(_SetCopyingPath, SetCopyingPath);
             DirectoryInfo DIR = new DirectoryInfo(GlobalVariable.objMainWindowVM.SavedData.DriveLetter);
             LsRootTreeViewItem = new ObservableCollection<RootTreeViewItem>();
-            MainNodeViewItem = new ObservableCollection<ObservableCollection<RootTreeViewItem>>();
+
+            RootTreeViewItem Parent = new RootTreeViewItem();
+            Parent.Header = DIR.Name;
+            Parent.Path = DIR.FullName;
+            Parent.Type = DIR.GetType().Name;
+            Parent.IsExpanded = false;
+            LsRootTreeViewItem.Add(Parent);
+
+            Parent.LsChildrenNode = new ObservableCollection<RootTreeViewItem>();
             foreach (DirectoryInfo DR in DIR.GetDirectories())
             {
-               
+
                 if (!DR.Attributes.ToString().Contains("Hidden"))
                 {
                     RootTreeViewItem ParenNode = new RootTreeViewItem();
@@ -215,10 +235,9 @@ namespace ExplorerDemo.ViewModel
                     ParenNode.Path = DR.FullName;
                     ParenNode.Type = DR.GetType().Name;
                     ParenNode.IsExpanded = false;
-                    LsRootTreeViewItem.Add(ParenNode);
+                    Parent.LsChildrenNode.Add(ParenNode);
 
                     ParenNode.LsChildrenNode = new ObservableCollection<RootTreeViewItem>();
-                   // ParenNode.LsFiles = new ObservableCollection<RootTreeViewItem>();
                     foreach (DirectoryInfo CDIR in DR.GetDirectories())
                     {
                         RootTreeViewItem ChildrenNode = new RootTreeViewItem();
@@ -242,9 +261,25 @@ namespace ExplorerDemo.ViewModel
                     ParenNode.Path = DR.FullName;
                     ParenNode.Type = DR.GetType().Name;
                     ParenNode.IsExpanded = false;
-                    LsRootTreeViewItem.Add(ParenNode);
+                    Parent.LsChildrenNode.Add(ParenNode);
                 }
             }
+        }
+
+        #endregion
+
+        public ChoosenDrive()
+        {
+            ShowHomePage = new DelegateCommand(ExecuteShowHomeNPage, CanExcuteShowHomePage);
+            ShowNextPage = new DelegateCommand(null, _CanExcute);
+            ShowPreviousPage = new DelegateCommand(null, _CanExcute);
+
+            ClickCopy = new DelegateCommand(SetCopyingPath, IsAllowedToCopy);
+            ClickCut = new DelegateCommand(SetCutingPath, IsAllowedToCut);
+            ClickPaste = new DelegateCommand(Paste, IsAllowedToPaste);
+
+            BuildParentNode();
+
         }
     }
 

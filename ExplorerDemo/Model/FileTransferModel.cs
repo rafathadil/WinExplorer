@@ -8,39 +8,35 @@ namespace ExplorerDemo.Model
 {
     public class FileTransferModel : BaseClass
     {
-
-        string _CopyFrom { get; set; }
-        public string CopyFrom
+        public enum EAction
         {
-            get { return _CopyFrom; }
+            none,  cut, copy, 
+        }
+        RootTreeViewItem _SourceFile { get; set; }
+        public RootTreeViewItem SourceFile
+        {
+            get { return _SourceFile; }
             set
             {
-                _CopyFrom = value;
-                OnPropertyChanged("CopyFrom");
+                _SourceFile = value;
+                OnPropertyChanged("SourceFile");
             }
         }
 
-        public string _PastTo { get; set; }
-        public string PastTo
+        public RootTreeViewItem _DestinationAdress { get; set; }
+        public RootTreeViewItem DestinationAdress
         {
-            get { return _PastTo; }
+            get { return _DestinationAdress; }
             set
             {
-                _PastTo = value;
-                OnPropertyChanged("PastTo");
+                _DestinationAdress = value;
+                OnPropertyChanged("DestinationAdress");
             }
         }
 
-        string _CutFrom { get; set; }
-        public string CutFrom
-        {
-            get { return _CutFrom; }
-            set
-            {
-                _CutFrom = value;
-                OnPropertyChanged("CutFrom");
-            }
-        }
+       
+        public EAction CurrentAction { get; set; } 
+        
 
         private DelegateCommand _click;
         public DelegateCommand Click

@@ -66,12 +66,18 @@
     <Compile Include="Model\FileTransferModel.cs" />
     <Compile Include="TreeViewItem.cs" />
     <Compile Include="ViewModel\ChoosenDrive.cs" />
+    <Compile Include="ViewModel\DataTransferVM.cs" />
     <Compile Include="ViewModel\DrivesVM.cs" />
+    <Compile Include="ViewModel\ProcessVM.cs" />
+    <Compile Include="ViewModel\ValidationVM.cs" />
     <Compile Include="View\ChoosenDrive.xaml.cs">
       <DependentUpon>ChoosenDrive.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Drives.xaml.cs">
       <DependentUpon>Drives.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UcProcessing.xaml.cs">
+      <DependentUpon>UcProcessing.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -95,6 +101,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Drives.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UcProcessing.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

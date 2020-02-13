@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:ExplorerDemo"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!--Button Style - Navigation Button-->
+
         <Style x:Key="style_Button_Navigation" TargetType="{x:Type Button}">
             <Setter Property="Focusable" Value="False" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>

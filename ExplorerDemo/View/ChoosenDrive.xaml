@@ -13,14 +13,16 @@
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TreeView   Grid.Row="1" Height="Auto" ItemsSource="{Binding LsRootTreeViewItem}" Helper:TreeViewHelper.SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"   HorizontalAlignment="Left" Name="tvwDirectory" 
-                  Margin="0,0,0,0" Width="400"  >
+        <!--Helper:TreeViewHelper.SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"-->
+        <TreeView   Grid.Row="1" Height="Auto" ItemsSource="{Binding LsRootTreeViewItem}"  
+                     HorizontalAlignment="Left" Name="tvwDirectory" Helper:TreeViewHelper.SelectedItem="{Binding Path=.,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                  Margin="0,0,0,0" Width="400">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate  ItemsSource="{Binding  LsChildrenNode}" >
                     <StackPanel Orientation="Horizontal">
                         <CheckBox  VerticalAlignment="Center" IsChecked="{Binding IsSelected}"></CheckBox>
                         <Label  VerticalAlignment="Center" Content="{Binding Header}"/>
-                         
+
                     </StackPanel>
                     <!--<HierarchicalDataTemplate.ItemTemplate>
                         <HierarchicalDataTemplate ItemsSource="{Binding LsFiles}" >
@@ -41,10 +43,20 @@
                 </Style>
             </TreeView.ItemContainerStyle>
         </TreeView>
-        <StackPanel  Grid.Column="1" Orientation="Horizontal">
-            <Button Command="{Binding ClickCopy}" Width="100" Height="50" Margin="20"  Content="Copy" Style="{StaticResource style_Button_UserControl}"></Button>
-            <Button  Width="100" Height="50" Margin="20" Content="Cut" Style="{StaticResource style_Button_UserControl}"></Button>
-            <Button  Width="100" Height="50" Margin="10" Content="Paste" Style="{StaticResource style_Button_UserControl}"></Button>
-        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <StackPanel   Orientation="Horizontal">
+                <Button Command="{Binding ClickCopy}" Width="100" Height="50" Margin="20"  Content="Copy" Style="{StaticResource style_Button_UserControl}"></Button>
+                <Button Command="{Binding ClickCut}" Width="100" Height="50" Margin="20" Content="Cut" Style="{StaticResource style_Button_UserControl}"></Button>
+                <Button  Command="{Binding ClickPaste}" Width="100" Height="50" Margin="10" Content="Paste" Style="{StaticResource style_Button_UserControl}"></Button>
+            </StackPanel>
+            <TextBlock Text="{Binding ValidationError}" TextWrapping="Wrap" FontSize="25" Grid.Row="2"></TextBlock>
+
+        </Grid>
+
     </Grid>
 </UserControl>

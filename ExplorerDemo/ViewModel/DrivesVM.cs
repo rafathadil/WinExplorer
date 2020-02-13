@@ -10,19 +10,12 @@ namespace ExplorerDemo.ViewModel
 {
     public class DrivesVM : BaseClass, INavigation
     {
+
+        #region Private Properties
         private ObservableCollection<ConnectedDrivesModel> LsConnectedDrives
         {
             get; set;
         }
-
-        #region Private Properties
-
-        private object previousPage;
-        private object nextPage;
-
-        #endregion
-
-        #region Private Properties
         public ObservableCollection<ConnectedDrivesModel> ListofConnectedDrives
         {
             get
@@ -34,34 +27,7 @@ namespace ExplorerDemo.ViewModel
                 LsConnectedDrives = value;
             }
         }
-        public object PreviousPage
-        {
-            get
-            {
-                return previousPage;
-            }
-            set
-            {
-                previousPage = value;
-                OnPropertyChanged("PreviousPage");
-            }
-        }
-        public object NextPage
-        {
-            get
-            {
-                return nextPage;
-            }
-            set
-            {
-                nextPage = value;
-                OnPropertyChanged("NextPage");
-            }
-        }
-        #endregion
 
-
-        //The command property
         private DelegateCommand showNextPage;
         public DelegateCommand ShowNextPage
         {
@@ -90,7 +56,23 @@ namespace ExplorerDemo.ViewModel
             set { navigatebegin = value; }
         }
 
-        public DrivesVM()
+        #endregion
+
+        #region Methods
+        private static string FormatBytes(long bytes)
+        {
+            string[] Suffix = { "B", "KB", "MB", "GB", "TB" };
+            int i;
+            double dblSByte = bytes;
+            for (i = 0; i < Suffix.Length && bytes >= 1024; i++, bytes /= 1024)
+            {
+                dblSByte = bytes / 1024.0;
+            }
+
+            return String.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
+        }
+
+        public void Getdrivedetails()
         {
             var LS = DriveInfo.GetDrives().Where(dr => dr.IsReady == true).ToList();
 
@@ -99,45 +81,20 @@ namespace ExplorerDemo.ViewModel
             foreach (var DriveInfo in LS)
             {
                 ConnectedDrivesModel ConnectedDrive = new ConnectedDrivesModel();
+                ConnectedDrive.DriveLable = DriveInfo.VolumeLabel;
                 ConnectedDrive.DriveLetter = DriveInfo.Name;
+                ConnectedDrive.AvailableFreeSpace = "FreeSpace : " + FormatBytes(DriveInfo.AvailableFreeSpace);
+                ConnectedDrive.TotalSize = "Total Size : " + FormatBytes(DriveInfo.TotalSize);
+                ConnectedDrive.VloType = "Drive Type : " + DriveInfo.DriveType;
                 ConnectedDrive.Click = new DelegateCommand(ExecuteClick, CanExcuteDrives);
                 ListofConnectedDrives.Add(ConnectedDrive);
             }
-
-            PreviousPage = this;
-
-            ShowNextPage = new DelegateCommand(null, CanExcuteShowNextPage);
-            ShowPreviousPage = new DelegateCommand(null, CanExcuteShowPreviousPage);
-            ShowHomePage = new DelegateCommand(null, CanExcuteShowPreviousPage);
-            Navigatebegin = new DelegateCommand(ExecuteShowNextPage, _CanExcuteShowNextPage);
-
-
         }
 
-        private bool _CanExcuteShowNextPage(object obj)
-        {
-            return true;
-        }
-        //The execute and can execute methods.
-        private bool CanExcuteShowNextPage(object obj)
+        private bool _CanExcute(object obj)
         {
             return false;
         }
-        private void ExecuteShowNextPage(object obj)
-        {
-            //  NextPage = new LanguageVM();
-            GlobalVariable.objMainWindowVM.CurrentPage = NextPage;
-        }
-
-        private bool CanExcuteShowPreviousPage(object obj)
-        {
-            return false;
-        }
-        private bool CanExcuteShowHomePage(object obj)
-        {
-            return false;
-        }
-
         private bool CanExcuteDrives(object obj)
         {
             return true;
@@ -145,12 +102,19 @@ namespace ExplorerDemo.ViewModel
         private void ExecuteClick(object obj)
         {
             GlobalVariable.objMainWindowVM.SavedData = ListofConnectedDrives.Where(i => i.IsSelected).FirstOrDefault();
-
-            NextPage = new ChoosenDrive();
             GlobalVariable.objMainWindowVM.HomePage = GlobalVariable.objMainWindowVM.CurrentPage;
-            GlobalVariable.objMainWindowVM.CurrentPage = NextPage;
-            
-        }
+            GlobalVariable.objMainWindowVM.CurrentPage = new ChoosenDrive();
 
+        }
+        #endregion
+
+        public DrivesVM()
+        {
+            ShowNextPage = new DelegateCommand(null, _CanExcute);
+            ShowPreviousPage = new DelegateCommand(null, _CanExcute);
+            ShowHomePage = new DelegateCommand(null, _CanExcute);
+            Getdrivedetails();
+
+        }
     }
 }

@@ -4,15 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace ExplorerDemo
 {
-    public static class GlobalVariable
+    public static class GlobalVariable 
     {
         public static ViewModel.MainWindowVM objMainWindowVM { get; set; }
 
         public static FileTransferModel FileTransferModel { get; set; }
 
         public static RootTreeViewItem TreviewSelectedItem { get; set; }
+        
     }
 }

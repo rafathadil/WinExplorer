@@ -57,7 +57,6 @@ namespace ExplorerDemo.ViewModel
 
         public MainWindowVM()
         {
-            //objMainWindowVM = this;
             HomePage = new DrivesVM();
             CurrentPage = HomePage;
         }
