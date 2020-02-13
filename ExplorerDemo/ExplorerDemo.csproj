@@ -64,7 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\FileTransferModel.cs" />
-    <Compile Include="TreeViewItem.cs" />
+    <Compile Include="Model\TreeViewItem.cs" />
     <Compile Include="ViewModel\ChoosenDrive.cs" />
     <Compile Include="ViewModel\DataTransferVM.cs" />
     <Compile Include="ViewModel\DrivesVM.cs" />
@@ -87,11 +87,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BaseClass.cs" />
-    <Compile Include="GlobalVariable.cs" />
+    <Compile Include="Utilz\BaseClass.cs" />
+    <Compile Include="Utilz\GlobalVariable.cs" />
     <Compile Include="INavigation.cs" />
     <Compile Include="Model\ConnectedDrivesModel.cs" />
-    <Compile Include="DelegateCommand.cs" />
+    <Compile Include="Utilz\DelegateCommand.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

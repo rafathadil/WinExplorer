@@ -20,10 +20,7 @@ namespace ExplorerDemo
             return (object)obj.GetValue(SelectedItemProperty);
         }
 
-        //public object SelectedItem_
-        //{
-        //    get { return (object)TreeView.GetValue(SelectedItemProperty); }
-        //}
+       
         public static void SetSelectedItem(DependencyObject obj, object value)
         {
             obj.SetValue(SelectedItemProperty, value);
